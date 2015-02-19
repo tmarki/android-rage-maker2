@@ -31,7 +31,7 @@
         android:layout_margin="4dp"
         android:src="@drawable/ic_menu"
         fab:fab_type="mini"
-        fab:fab_colorNormal="#E65100"
-        fab:fab_colorPressed="#FFC107"
+        fab:fab_colorNormal="#333333"
+        fab:fab_colorPressed="#888888"
         fab:fab_colorRipple="#FFFFFF" />
 </FrameLayout>

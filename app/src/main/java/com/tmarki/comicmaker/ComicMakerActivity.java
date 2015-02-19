@@ -73,6 +73,8 @@ import android.widget.Toast;
 import com.google.analytics.tracking.android.MapBuilder;*/
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.tmarki.comicmaker.ComicEditor.TouchModes;
 import com.tmarki.comicmaker.WidthPicker.OnWidthChangedListener;
 import com.tmarki.comicmaker.ZoomPicker.OnZoomChangedListener;
@@ -144,6 +146,12 @@ public class ComicMakerActivity extends Activity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        Tracker t = ((CMApplication) getApplication()).getTracker();
+
+        t.setScreenName("com.tmarki.comicmaker.ComicMakerActivity");
+
+        t.send(new HitBuilders.AppViewBuilder().build());
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -673,7 +681,7 @@ public class ComicMakerActivity extends Activity implements
 
                     }
                     alertDialog.setMessage("Rage Comic Maker v" + versionname
-                            + "\nfor Android\n\n(c) 2011-2013 Tamas Marki\n"
+                            + "\nfor Android\n\n(c) 2011-2015 Tamas Marki\n"
                             + getResources().getString(R.string.abouttext));
                     alertDialog.setButton(getResources().getString(R.string.home_page),
                             new OnClickListener() {
@@ -893,6 +901,7 @@ public class ComicMakerActivity extends Activity implements
 		CharSequence text = getResources().getString(R.string.comic_saved_as)
 				+ " ";
 		//EasyTracker.getInstance(this).send(MapBuilder.createEvent("ui_action", "save", "start", null).build());
+        anaLog("ui_action", "save", "start");
 		try {
 			String ReservedChars = "|\\?*<\":>+[]/'";
 			for (char c : ReservedChars.toCharArray()) {
@@ -905,6 +914,7 @@ public class ComicMakerActivity extends Activity implements
 				;
 				Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 				//EasyTracker.getInstance(this).send(MapBuilder.createEvent("ui_action", "save", "error", null).build());
+                anaLog("ui_action", "save", "error");
 				return;
 			}
 			File folder = getFilesDir();
@@ -958,6 +968,7 @@ public class ComicMakerActivity extends Activity implements
 				b.compress(CompressFormat.JPEG, 95, fos);
 			fos.close();
 			//EasyTracker.getInstance(this).send(MapBuilder.createEvent("ui_action", "save", "done", null).build());
+            anaLog("ui_action", "save", "done");
 			String[] str = new String[1];
 			str[0] = fullname;
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO) {
@@ -970,6 +981,7 @@ public class ComicMakerActivity extends Activity implements
 			setDetailTitle();
 			if (doShare) {
 				//EasyTracker.getInstance(this).send(MapBuilder.createEvent("ui_action", "share", "start", null).build());
+                anaLog("ui_action", "share", "start");
 				Intent share = new Intent(Intent.ACTION_SEND);
 				if (ext.equals(".png"))
 					share.setType("image/png");
@@ -982,6 +994,7 @@ public class ComicMakerActivity extends Activity implements
 
 				startActivity(Intent.createChooser(share, getResources()
 						.getString(R.string.share_comic)));
+                anaLog("ui_action", "share", "done");
 				//EasyTracker.getInstance(this).send(MapBuilder.createEvent("ui_action", "share", "done", null).build());
 			}
 		} catch (Exception e) {
@@ -1357,5 +1370,12 @@ public class ComicMakerActivity extends Activity implements
 		super.onStop();
 		//EasyTracker.getInstance(this).activityStop(this);
 	}
+
+    protected void anaLog (String cat, String act, String lab) {
+        ((CMApplication) getApplication()).getTracker().send(
+                new HitBuilders.EventBuilder()
+                        .setCategory(cat).setAction(act).setLabel(lab).build()
+        );
+    }
 
 }
