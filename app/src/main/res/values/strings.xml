@@ -85,5 +85,9 @@
     <string name="drafts">Drafts</string>
     <string name="draft_options">Draft options</string>
     <string name="autoload_question">Load last comic?</string>
-    
+    <string name="eu_title">Notice</string>
+    <string name="eu_text">We use device identifiers to personalise content and ads, to provide social media features and to analyse our traffic. We also share such identifiers and other information from your device with our social media, advertising and analytics partners.</string>
+    <string name="eu_details">See details</string>
+    <string name="eu_accept">Accept</string>
+
 </resources>

@@ -13,16 +13,6 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package com.tmarki.comicmaker;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Vector;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -37,40 +27,27 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.database.Cursor;
-import android.graphics.Bitmap;
+import android.graphics.*;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.widget.PopupMenu;
+import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ContextMenu;
+import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.SubMenu;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
-
 import android.widget.Toast;
-
-/*import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;*/
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
@@ -79,7 +56,16 @@ import com.tmarki.comicmaker.ComicEditor.TouchModes;
 import com.tmarki.comicmaker.WidthPicker.OnWidthChangedListener;
 import com.tmarki.comicmaker.ZoomPicker.OnZoomChangedListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.*;
+
 import static android.support.v7.widget.PopupMenu.OnMenuItemClickListener;
+
+/*import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;*/
 
 public class ComicMakerActivity extends Activity implements
 		ColorPickerDialog.OnColorChangedListener, OnWidthChangedListener,
@@ -311,6 +297,7 @@ public class ComicMakerActivity extends Activity implements
         });
 
 		mainView.invalidate();
+        euConsent();
 	}
 
 	@Override
@@ -1373,9 +1360,157 @@ public class ComicMakerActivity extends Activity implements
 
     protected void anaLog (String cat, String act, String lab) {
         ((CMApplication) getApplication()).getTracker().send(
-                new HitBuilders.EventBuilder()
-                        .setCategory(cat).setAction(act).setLabel(lab).build()
-        );
+				new HitBuilders.EventBuilder()
+						.setCategory(cat).setAction(act).setLabel(lab).build()
+		);
     }
+
+	private void euConsent() {
+		if (showCookieHint()) {
+			SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+					.setTitleText(getString(R.string.eu_title))
+					.setContentText(getString(R.string.eu_text))
+					.setCancelText(getString(R.string.eu_details))
+					.setConfirmText(getString(R.string.eu_accept))
+					.showCancelButton(true)
+					.setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+						@Override
+						public void onClick(SweetAlertDialog sDialog) {
+							Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://tmarki.com/android_privacy.txt"));
+							startActivity(browserIntent);
+						}
+					})
+					.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+						@Override
+						public void onClick(SweetAlertDialog sDialog) {
+							SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(ComicMakerActivity.this).edit();
+							editor.putBoolean("termsAccepted", true);
+							editor.commit();
+							sDialog.cancel();
+						}
+					});
+			sweetAlertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(ComicMakerActivity.this);
+					if (!settings.getBoolean("termsAccepted", false))
+						ComicMakerActivity.this.finish();
+				}
+			});
+			sweetAlertDialog.show();
+		}
+	}
+
+	boolean showCookieHint()
+	{
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		if (settings.getBoolean("termsAccepted", false)) return false;
+
+		List<String> list = new ArrayList<String>();
+		list.add("AT"); //Austria
+		list.add("BE"); //Belgium
+		list.add("BG"); //Bulgaria
+		list.add("HR"); //Croatia
+		list.add("CY"); //Cyprus
+		list.add("CZ"); //Czech Republic
+		list.add("DK"); //Denmark
+		list.add("EE"); //Estonia
+		list.add("FI"); //Finland
+		list.add("FR"); //France
+		list.add("GF"); //French Guiana
+		list.add("PF"); //French Polynesia
+		list.add("TF"); //French Southern Territories
+		list.add("DE"); //Germany
+		list.add("GR"); //Greece
+		list.add("HU"); //Hungary
+		list.add("IE"); //Ireland
+		list.add("IT"); //Italy
+		list.add("LV"); //Latvia
+		list.add("LT"); //Lithuania
+		list.add("LU"); //Luxembourg
+		list.add("MT"); //Malta
+		list.add("NL"); //Netherlands
+		list.add("PL"); //Poland
+		list.add("PT"); //Portugal
+		list.add("RO"); //Romania
+		list.add("SK"); //Slovakia
+		list.add("SI"); //Slovenia
+		list.add("ES"); //Spain
+		list.add("SE"); //Sweden
+		list.add("ES"); //Spain
+		list.add("GB"); //United Kingdom of Great Britain and Northern Ireland
+
+		boolean error = false;
+
+		String TAG = "eucheck";
+    /* is eu sim ? */
+		try {
+			final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			String simCountry = tm.getSimCountryIso();
+			if (simCountry != null && simCountry.length() == 2) {
+				simCountry = simCountry.toUpperCase();
+				for (int i = 0; i < list.size(); ++i) {
+					if (list.get(i).equalsIgnoreCase(simCountry) == true) {
+						Log.i(TAG, "is EU User (sim)");
+						return true;
+					}
+				}
+			}
+		}
+		catch (Exception e) { error = true; }
+
+
+    /* is eu network */
+		try {
+			final TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			if (tm.getPhoneType() != TelephonyManager.PHONE_TYPE_CDMA) {
+				String networkCountry = tm.getNetworkCountryIso();
+				if (networkCountry != null && networkCountry.length() == 2) {
+					networkCountry = networkCountry.toUpperCase();
+					for (int i = 0; i < list.size(); ++i) {
+						if (list.get(i).equalsIgnoreCase(networkCountry) == true) {
+							Log.i(TAG, "is EU User (net)");
+							return true;
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e) { error = true; }
+
+    /* is eu time zone id */
+		try {
+			String tz = TimeZone.getDefault().getID().toLowerCase();
+			if (tz.length() < 10) {
+				error = true;
+			} else if (tz.contains("euro") == true) {
+				Log.i(TAG, "is EU User (time)");
+				return true;
+			}
+		} catch (Exception e) {
+			error = true;
+		}
+
+    /* is eu time zone id */
+		try {
+			String tz = TimeZone.getDefault().getID().toLowerCase();
+			if (tz.length() < 10) {
+				error = true;
+			} else if (tz.contains("europe") == true) {
+				Log.i(TAG, "is EU User (time) " + tz);
+				return true;
+			}
+		} catch (Exception e) {
+			error = true;
+		}
+
+
+		if (error == true) {
+			Log.i(TAG, "is EU User (err)");
+			return true;
+		}
+
+		return false;
+	}
 
 }

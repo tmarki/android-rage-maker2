@@ -83,5 +83,8 @@
         <string name="drafts">Szkice</string>
     <string name="draft_options">Ustawienia szkiców</string>
     <string name="autoload_question">Załadować ostatni komiks?</string>
-    
+        <string name="eu_text">Wykorzystujemy identyfikatory urządzeń do personalizacji treści i reklam, aby oferować funkcje mediów społecznościowych i analizować ruch. Takie identyfikatory i inne informacje z Twojego urządzenia udostępniamy partnerom społecznościowym, reklamowym i analitycznym.</string>
+    <string name="eu_details">Zobacz szczegóły</string>
+    <string name="eu_accept">Akceptować</string>
+
 </resources>

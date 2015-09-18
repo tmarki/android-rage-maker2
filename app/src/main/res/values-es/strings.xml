@@ -92,5 +92,8 @@ Usted ha estado utilizando esta aplicación durante un tiempo. Atención a compa
 <string name="black"> Negro </string>
 <string name="white"> Blanco </string>
 <string name="lock"> de bloqueo / desbloqueo </string>
-   
+    <string name="eu_text">En este sitio se usan identificadores de dispositivo para personalizar el contenido y los anuncios, con el fin de ofrecer funciones de medios sociales y para analizar el tráfico. Además, compartimos estos identificadores y otra información sobre su dispositivo con nuestros partners de medios sociales, de publicidad y de análisis web.</string>
+    <string name="eu_details">Ver detalles</string>
+    <string name="eu_accept">Aceptar</string>
+
 </resources>
