@@ -8,8 +8,8 @@ android {
         applicationId "com.tmarki.comicmaker"
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 39
-        versionName "2.0.1"
+        versionCode 40
+        versionName "2.0.2"
     }
     buildTypes {
         release {

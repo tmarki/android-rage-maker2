@@ -3,8 +3,8 @@
 	 package="com.tmarki.comicmaker"
      xmlns:tools="http://schemas.android.com/tools"
 	 android:installLocation="preferExternal"
-     android:versionName="2.0.1"
-     android:versionCode="39">
+     android:versionName="2.0.2"
+     android:versionCode="40">
       
     <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

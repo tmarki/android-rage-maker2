@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-5472684851519205/3105630573" />
+        ads:adUnitId="ca-app-pub-3970944588963971/4909101249" />
 </RelativeLayout>
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
